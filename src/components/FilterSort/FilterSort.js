@@ -1,26 +1,34 @@
-import { useContext, useEffect, useState } from "react";
+import { useState } from "react";
 import "./FilterSort.css";
-import DataContext from "../../context/DataContext";
+
 import Card from "../Card/Card";
 
 function FilterSort({ arrOfProducts }) {
     const [sortOrder, setSortOrder] = useState(arrOfProducts);
-    const arrOfSizes = [];
+    const [selectedSizes, setSelectedSizes] = useState([]);
+
 
     const getIntersectionArr = (arr1, arr2) => {
-        console.log(arr1.filter((item) => arr2.includes(item.size)));
-        setSortOrder(arr1.filter((item) => arr2.includes(item.size)));
+        if (arr2.length === 0) {
+            setSortOrder(arr1);
+        } else {
+            const filteredArr = arr1.filter((item) => arr2.includes(item.size));
+            setSortOrder(filteredArr);
+        }
     };
 
     const handleClick = (e) => {
+        const size = e.target.parentNode.innerText;
+        let arrOfSizes;
+
         if (e.target.checked) {
-            arrOfSizes.push(e.target.parentNode.innerText);
+            arrOfSizes = [...selectedSizes, size];
         } else {
-            arrOfSizes.splice(
-                arrOfSizes.indexOf(e.target.parentNode.innerText),
-                1
-            );
+           arrOfSizes = selectedSizes.filter(
+            (selectedSize) => selectedSize !== size,
+          );
         }
+        setSelectedSizes(arrOfSizes);
         getIntersectionArr(arrOfProducts, arrOfSizes);
     };
 
